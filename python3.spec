@@ -126,6 +126,12 @@ License: Python
 # on files that test invalid syntax.
 %undefine py_auto_byte_compile
 
+# Don't let RPM set SOURCE_DATE_EPOCH based on the latest %%changelog date
+# It breaks tests with: can't find '__main__' module in .../test_zip.zip
+# Reported at https://bugs.python.org/issue34022
+# Tracked at https://bugzilla.redhat.com/show_bug.cgi?id=1724753
+%global source_date_epoch_from_changelog 0
+
 # For multilib support, files that are different between 32- and 64-bit arches
 # need different filenames. Use "64" or "32" according to the word size.
 # Currently, the best way to determine an architecture's word size happens to
