@@ -197,6 +197,9 @@ BuildRequires: /usr/bin/dtrace
 # workaround http://bugs.python.org/issue19804 (test_uuid requires ifconfig)
 BuildRequires: /usr/sbin/ifconfig
 
+# For %%python_provide
+BuildRequires: python-rpm-macros
+
 %if %{with rpmwheels}
 BuildRequires: python-setuptools-wheel
 BuildRequires: python-pip-wheel
@@ -379,6 +382,8 @@ Provides: bundled(python3-pip) = 19.0.3
 Provides: bundled(python3-setuptools) = 40.8.0
 %endif
 
+%{?python_provide:%python_provide python3-libs}
+
 # There are files in the standard library that have python shebang.
 # We've filtered the automatic requirement out so libs are installable without
 # the main package. This however makes it pulled in by default.
@@ -404,6 +409,8 @@ BuildRequires: python-rpm-macros
 Requires: python-rpm-macros
 Requires: python3-rpm-macros
 Requires: python3-rpm-generators
+
+%{?python_provide:%python_provide python3-devel}
 
 # This is not "API" (packages that need setuptools should still BuildRequire it)
 # However some packages apparently can build both with and without setuptools
@@ -442,6 +449,8 @@ Provides: %{name}-tools = %{version}-%{release}
 Provides: %{name}-tools%{?_isa} = %{version}-%{release}
 Obsoletes: %{name}-tools < %{version}-%{release}
 
+%{?python_provide:%python_provide python3-idle}
+
 # Shall be removed in Fedora 31
 Obsoletes: platform-python-tools < %{platpyver}
 
@@ -462,6 +471,8 @@ configuration, browsers, and other dialogs.
 Summary: A GUI toolkit for Python
 Requires: %{name} = %{version}-%{release}
 
+%{?python_provide:%python_provide python3-tkinter}
+
 # Shall be removed in Fedora 31
 Obsoletes: platform-python-tkinter < %{platpyver}
 
@@ -474,6 +485,8 @@ the Python programming language.
 Summary: The self-test suite for the main python3 package
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
+
+%{?python_provide:%python_provide python3-test}
 
 # Shall be removed in Fedora 31
 Obsoletes: platform-python-test < %{platpyver}
@@ -499,6 +512,8 @@ Requires: %{name}-devel%{?_isa} = %{version}-%{release}
 Requires: %{name}-test%{?_isa} = %{version}-%{release}
 Requires: %{name}-tkinter%{?_isa} = %{version}-%{release}
 Requires: %{name}-idle%{?_isa} = %{version}-%{release}
+
+%{?python_provide:%python_provide python3-debug}
 
 %description debug
 python3-debug provides a version of the Python runtime with numerous debugging
