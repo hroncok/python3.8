@@ -925,9 +925,6 @@ find %{buildroot} -name \*.bat -exec rm {} \;
 find %{buildroot}/ -name "*~" -exec rm -f {} \;
 find . -name "*~" -exec rm -f {} \;
 
-# Get rid of a stray copy of the license:
-rm %{buildroot}%{pylibdir}/LICENSE.txt
-
 # Do bytecompilation with the newly installed interpreter.
 # This is similar to the script in macros.pybytecompile
 # compile *.pyc
@@ -1075,7 +1072,6 @@ CheckPython optimized
 
 
 %files
-%license LICENSE
 %doc README.rst
 
 %if %{without flatpackage}
@@ -1098,12 +1094,13 @@ CheckPython optimized
 %{_mandir}/*/python.1*
 
 %files libs
-%license LICENSE
 %doc README.rst
 %endif
 
 %dir %{pylibdir}
 %dir %{dynload_dir}
+
+%license %{pylibdir}/LICENSE.txt
 
 %{pylibdir}/lib2to3
 %if %{without flatpackage}
