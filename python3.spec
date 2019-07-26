@@ -17,7 +17,7 @@ URL: https://www.python.org/
 #global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 
 
@@ -1536,6 +1536,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Mon Jul 15 2019 Lumír Balhar <lbalhar@redhat.com> - 3.7.4-3
 - Move test.support module to python3-test subpackage
   https://fedoraproject.org/wiki/Changes/Move_test.support_module_to_python3-test_subpackage
