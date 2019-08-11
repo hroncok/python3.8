@@ -17,7 +17,7 @@ URL: https://www.python.org/
 #global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 
 
@@ -440,11 +440,12 @@ Summary: Libraries and header files needed for Python development
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires: python-rpm-macros
-Requires: python-rpm-macros
-Requires: python3-rpm-macros
-Requires: python3-rpm-generators
 
-%{?python_provide:%python_provide python3-devel}
+# The RPM related dependencies bring nothing to a non-RPM Python developer
+# But we want them when packages BuildRequire python3-devel
+Requires: (python-rpm-macros if rpm-build)
+Requires: (python3-rpm-macros if rpm-build)
+Requires: (python3-rpm-generators if rpm-build)
 
 # This is not "API" (packages that need setuptools should still BuildRequire it)
 # However some packages apparently can build both with and without setuptools
@@ -453,7 +454,9 @@ Requires: python3-rpm-generators
 # installed when -devel is required.
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1623914
 # See https://fedoraproject.org/wiki/Packaging:Directory_Replacement
-Requires: python3-setuptools
+Requires: (python3-setuptools if rpm-build)
+
+%{?python_provide:%python_provide python3-devel}
 
 Provides: %{name}-2to3 = %{version}-%{release}
 Provides: 2to3 = %{version}-%{release}
@@ -1536,6 +1539,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Sun Aug 11 2019 Miro Hrončok <mhroncok@redhat.com> - 3.7.4-5
+- Conditionalize python3-devel runtime dependencies on RPM packages and setuptools
+
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
