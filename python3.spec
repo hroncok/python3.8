@@ -2,10 +2,10 @@
 # Top-level metadata
 # ==================
 
-%global pybasever 3.7
+%global pybasever 3.8
 
 # pybasever without the dot:
-%global pyshortver 37
+%global pyshortver 38
 
 Name: python3
 Summary: Interpreter of the Python programming language
@@ -13,11 +13,11 @@ URL: https://www.python.org/
 
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
-%global general_version %{pybasever}.4
-#global prerel ...
+%global general_version %{pybasever}.0
+%global prerel b3
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 5%{?dist}
+Release: 1%{?dist}
 License: Python
 
 
@@ -35,6 +35,17 @@ License: Python
 # and always keep it on for python37 etc.
 # WARNING: This does not change the package name and summary above
 %bcond_with flatpackage
+
+# When bootstrapping python3, we need to build setuptools.
+# but setuptools BR python3-devel and that brings in python3-rpm-generators;
+# python3-rpm-generators needs python3-setuptools, so we cannot have it yet.
+#
+# Procedure: https://fedoraproject.org/wiki/SIGs/Python/UpgradingPython
+#
+#   IMPORTANT: When bootstrapping, it's very likely the wheels for pip and
+#   setuptools are not available. Turn off the rpmwheels bcond until
+#   the two packages are built with wheels to get around the issue.
+%bcond_with bootstrap
 
 # Whether to use RPM build wheels from the python-{pip,setuptools}-wheel package
 # Uses upstream bundled prebuilt wheels otherwise
@@ -77,10 +88,6 @@ License: Python
 %endif
 
 
-# Notes from bootstraping Python 3.7:
-# https://fedoraproject.org/wiki/SIGs/Python/UpgradingPython
-
-
 # =====================
 # General global macros
 # =====================
@@ -90,8 +97,8 @@ License: Python
 
 # ABIFLAGS, LDVERSION and SOABI are in the upstream configure.ac
 # See PEP 3149 for some background: http://www.python.org/dev/peps/pep-3149/
-%global ABIFLAGS_optimized m
-%global ABIFLAGS_debug     dm
+%global ABIFLAGS_optimized %{nil}
+%global ABIFLAGS_debug     d
 
 %global LDVERSION_optimized %{pybasever}%{ABIFLAGS_optimized}
 %global LDVERSION_debug     %{pybasever}%{ABIFLAGS_debug}
@@ -125,12 +132,6 @@ License: Python
 # available in /usr/bin when Python is built. Also, the bytecompilation fails
 # on files that test invalid syntax.
 %undefine py_auto_byte_compile
-
-# Don't let RPM set SOURCE_DATE_EPOCH based on the latest %%changelog date
-# It breaks tests with: can't find '__main__' module in .../test_zip.zip
-# Reported at https://bugs.python.org/issue34022
-# Tracked at https://bugzilla.redhat.com/show_bug.cgi?id=1724753
-%global source_date_epoch_from_changelog 0
 
 # For multilib support, files that are different between 32- and 64-bit arches
 # need different filenames. Use "64" or "32" according to the word size.
@@ -205,6 +206,10 @@ BuildRequires: python-setuptools-wheel
 BuildRequires: python-pip-wheel
 %endif
 
+%if %{without bootstrap}
+# for make regen-all and distutils.tests.test_bdist_rpm
+BuildRequires: python%{pyshortver}
+%endif
 
 # =======================
 # Source code and patches
@@ -241,39 +246,10 @@ Patch102: 00102-lib64.patch
 # Downstream only: not appropriate for upstream
 Patch111: 00111-no-static-lib.patch
 
-# 00155 #
-# Avoid allocating thunks in ctypes unless absolutely necessary, to avoid
-# generating SELinux denials on "import ctypes" and "import uuid" when
-# embedding Python within httpd
-# See https://bugzilla.redhat.com/show_bug.cgi?id=814391
-Patch155: 00155-avoid-ctypes-thunks.patch
-
-
-# 00170 #
-# In debug builds, try to print repr() when a C-level assert fails in the
-# garbage collector (typically indicating a reference-counting error
-# somewhere else e.g in an extension module)
-# The new macros/functions within gcmodule.c are hidden to avoid exposing
-# them within the extension API.
-# Sent upstream: http://bugs.python.org/issue9263
-# See https://bugzilla.redhat.com/show_bug.cgi?id=614680
-Patch170: 00170-gc-assertions.patch
-
-# 00178 #
-# Don't duplicate various FLAGS in sysconfig values
-# http://bugs.python.org/issue17679
-# Does not affect python2 AFAICS (different sysconfig values initialization)
-Patch178: 00178-dont-duplicate-flags-in-sysconfig.patch
-
 # 00189 #
 # Instead of bundled wheels, use our RPM packaged wheels from
 # /usr/share/python-wheels
 Patch189: 00189-use-rpm-wheels.patch
-
-# 00205 #
-# LIBPL variable in makefile takes LIBPL from configure.ac
-# but the LIBPL variable defined there doesn't respect libdir macro
-Patch205: 00205-make-libpl-respect-lib64.patch
 
 # 00251
 # Set values of prefix and exec_prefix in distutils install command
@@ -285,11 +261,6 @@ Patch251: 00251-change-user-install-location.patch
 # 00274 #
 # Upstream uses Debian-style architecture naming. Change to match Fedora.
 Patch274: 00274-fix-arch-names.patch
-
-# 00316 #
-# We remove the exe files from distutil's bdist_wininst
-# So we mark the command as unsupported - and the tests are skipped
-Patch316: 00316-mark-bdist_wininst-unsupported.patch
 
 # 00328 #
 # Restore pyc to TIMESTAMP invalidation mode as default in rpmbubild
@@ -304,6 +275,10 @@ Patch328: 00328-pyc-timestamp-invalidation-mode.patch
 # More information, and a patch number catalog, is at:
 #
 #     https://fedoraproject.org/wiki/SIGs/Python/PythonPatches
+#
+# The patches are stored and rebased at:
+#
+#     https://github.com/fedora-python/cpython
 
 
 # ==========================================
@@ -404,8 +379,8 @@ Summary:        Python runtime libraries
 Requires: python-setuptools-wheel
 Requires: python-pip-wheel
 %else
-Provides: bundled(python3-pip) = 19.0.3
-Provides: bundled(python3-setuptools) = 40.8.0
+Provides: bundled(python3-pip) = 19.2.1
+Provides: bundled(python3-setuptools) = 41.0.1
 %endif
 
 %{?python_provide:%python_provide python3-libs}
@@ -440,13 +415,12 @@ Summary: Libraries and header files needed for Python development
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 BuildRequires: python-rpm-macros
-
 # The RPM related dependencies bring nothing to a non-RPM Python developer
 # But we want them when packages BuildRequire python3-devel
 Requires: (python-rpm-macros if rpm-build)
 Requires: (python3-rpm-macros if rpm-build)
-Requires: (python3-rpm-generators if rpm-build)
 
+%if %{without bootstrap}
 # This is not "API" (packages that need setuptools should still BuildRequire it)
 # However some packages apparently can build both with and without setuptools
 # producing egg-info as file or directory (depending on setuptools presence).
@@ -455,6 +429,9 @@ Requires: (python3-rpm-generators if rpm-build)
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1623914
 # See https://fedoraproject.org/wiki/Packaging:Directory_Replacement
 Requires: (python3-setuptools if rpm-build)
+
+Requires: (python3-rpm-generators if rpm-build)
+%endif
 
 %{?python_provide:%python_provide python3-devel}
 
@@ -559,15 +536,13 @@ extension modules.
 This version uses more memory and will be slower than the regular Python build,
 but is useful for tracking down reference-counting issues and other bugs.
 
-The bytecode format is unchanged, so that .pyc files are compatible between
-this and the standard version of Python, but the debugging features mean that
-C/C++ extension modules are ABI-incompatible and must be built for each version
-separately.
-
 The debug build shares installation directories with the standard Python
-runtime, so that .py and .pyc files can be shared.
-Compiled extension modules use a special ABI flag ("d") in the filename,
-so extensions for both versions can co-exist in the same directory.
+runtime. Python modules -- source (.py), bytecode (.pyc), and C-API extensions
+(.cpython*.so) -- are compatible between this and the standard version
+of Python.
+
+The debug runtime additionally supports debug builds of C-API extensions
+(with the "d" ABI flag) for debugging issues in those extensions.
 %endif # with debug_build
 
 %else  # with flatpackage
@@ -581,8 +556,8 @@ so extensions for both versions can co-exist in the same directory.
 Requires: python-setuptools-wheel
 Requires: python-pip-wheel
 %else
-Provides: bundled(python3-pip) = 19.0.3
-Provides: bundled(python3-setuptools) = 40.8.0
+Provides: bundled(python3-pip) = 19.2.1
+Provides: bundled(python3-setuptools) = 41.0.1
 %endif
 
 # The description for the flat package
@@ -619,19 +594,14 @@ rm -r Modules/expat
 %patch102 -p1
 %endif
 %patch111 -p1
-%patch155 -p1
-%patch170 -p1
-%patch178 -p1
 
 %if %{with rpmwheels}
 %patch189 -p1
 rm Lib/ensurepip/_bundled/*.whl
 %endif
 
-%patch205 -p1
 %patch251 -p1
 %patch274 -p1
-%patch316 -p1
 %patch328 -p1
 
 
@@ -719,8 +689,14 @@ BuildPython() {
   $ExtraConfigArgs \
   %{nil}
 
+%if %{without bootstrap}
+  # Regenerate generated files (needs python3)
+  %make_build regen-all PYTHON_FOR_REGEN="python%{pybasever}"
+%endif
+
+
   # Invoke the build
-  make EXTRA_CFLAGS="$CFLAGS $MoreCFlags" %{?_smp_mflags}
+  %make_build EXTRA_CFLAGS="$CFLAGS $MoreCFlags"
 
   popd
   echo FINISHED: BUILD OF PYTHON FOR CONFIGURATION: $ConfName
@@ -956,9 +932,6 @@ ln -s \
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1111275
 mv %{buildroot}%{_bindir}/2to3-%{pybasever} %{buildroot}%{_bindir}/2to3
 
-# make man python3.Xm work https://bugzilla.redhat.com/show_bug.cgi?id=1612241
-ln -s ./python%{pybasever}.1 %{buildroot}%{_mandir}/man1/python%{pybasever}m.1
-
 %if %{with flatpackage}
 # Remove stuff that would conflict with python3 package
 rm %{buildroot}%{_bindir}/python3
@@ -968,11 +941,11 @@ rm %{buildroot}%{_bindir}/pygettext3.py
 rm %{buildroot}%{_bindir}/msgfmt3.py
 rm %{buildroot}%{_bindir}/idle3
 rm %{buildroot}%{_bindir}/python3-*
-rm %{buildroot}%{_bindir}/pyvenv
 rm %{buildroot}%{_bindir}/2to3
 rm %{buildroot}%{_libdir}/libpython3.so
 rm %{buildroot}%{_mandir}/man1/python3.1*
 rm %{buildroot}%{_libdir}/pkgconfig/python3.pc
+rm %{buildroot}%{_libdir}/pkgconfig/python3-embed.pc
 %else
 # Link the unversioned stuff
 # https://fedoraproject.org/wiki/Changes/Python_means_Python3
@@ -1044,17 +1017,19 @@ CheckPython() {
   LD_LIBRARY_PATH=$ConfDir $ConfDir/python -m test.pythoninfo
 
   # Run the upstream test suite
-  # test_gdb skipped on armv7hl:
-  #   https://bugzilla.redhat.com/show_bug.cgi?id=1196181
   # test_gdb skipped on s390x:
   #   https://bugzilla.redhat.com/show_bug.cgi?id=1678277
+  # test_gdb skipped everywhere:
+  #   https://bugzilla.redhat.com/show_bug.cgi?id=1734327
+  # test_distutils
+  #   distutils.tests.test_bdist_rpm tests fail when bootstraping the Python
+  #   package: rpmbuild requires /usr/bin/pythonX.Y to be installed
   LD_LIBRARY_PATH=$ConfDir $ConfDir/python -m test.regrtest \
     -wW --slowest -j0 \
+    %if %{with bootstrap}
     -x test_distutils \
-    -x test_bdist_rpm \
-    %ifarch %{arm} s390x
-    -x test_gdb \
     %endif
+    -x test_gdb \
     %ifarch %{mips64}
     -x test_ctypes \
     %endif
@@ -1080,14 +1055,12 @@ CheckPython optimized
 %if %{without flatpackage}
 %{_bindir}/pydoc*
 %{_bindir}/python3
-%{_bindir}/pyvenv
 %else
 %{_bindir}/pydoc%{pybasever}
 %endif
 
 %{_bindir}/python%{pybasever}
-%{_bindir}/python%{pybasever}m
-%{_bindir}/pyvenv-%{pybasever}
+%{_bindir}/python%{LDVERSION_optimized}
 %{_mandir}/*/*3*
 
 
@@ -1209,6 +1182,7 @@ CheckPython optimized
 %{dynload_dir}/nis.%{SOABI_optimized}.so
 %{dynload_dir}/ossaudiodev.%{SOABI_optimized}.so
 %{dynload_dir}/parser.%{SOABI_optimized}.so
+%{dynload_dir}/_posixshmem.%{SOABI_optimized}.so
 %{dynload_dir}/pyexpat.%{SOABI_optimized}.so
 %{dynload_dir}/readline.%{SOABI_optimized}.so
 %{dynload_dir}/resource.%{SOABI_optimized}.so
@@ -1216,10 +1190,10 @@ CheckPython optimized
 %{dynload_dir}/spwd.%{SOABI_optimized}.so
 %{dynload_dir}/syslog.%{SOABI_optimized}.so
 %{dynload_dir}/termios.%{SOABI_optimized}.so
-%{dynload_dir}/_testmultiphase.%{SOABI_optimized}.so
 %{dynload_dir}/unicodedata.%{SOABI_optimized}.so
 %{dynload_dir}/_uuid.%{SOABI_optimized}.so
 %{dynload_dir}/xxlimited.%{SOABI_optimized}.so
+%{dynload_dir}/_xxsubinterpreters.%{SOABI_optimized}.so
 %{dynload_dir}/zlib.%{SOABI_optimized}.so
 
 %dir %{pylibdir}/site-packages/
@@ -1270,6 +1244,11 @@ CheckPython optimized
 %dir %{pylibdir}/importlib/__pycache__/
 %{pylibdir}/importlib/*.py
 %{pylibdir}/importlib/__pycache__/*%{bytecode_suffixes}
+
+%dir %{pylibdir}/importlib/metadata/
+%dir %{pylibdir}/importlib/metadata/__pycache__/
+%{pylibdir}/importlib/metadata/*.py
+%{pylibdir}/importlib/metadata/__pycache__/*%{bytecode_suffixes}
 
 %dir %{pylibdir}/json/
 %dir %{pylibdir}/json/__pycache__/
@@ -1324,6 +1303,7 @@ CheckPython optimized
 %endif
 %{_includedir}/python%{LDVERSION_optimized}/*.h
 %{_includedir}/python%{LDVERSION_optimized}/internal/
+%{_includedir}/python%{LDVERSION_optimized}/cpython/
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
 
 %if %{without flatpackage}
@@ -1331,6 +1311,7 @@ CheckPython optimized
 %{_bindir}/python-config
 %{_libdir}/pkgconfig/python3.pc
 %{_libdir}/pkgconfig/python.pc
+%{_libdir}/pkgconfig/python3-embed.pc
 %{_bindir}/pathfix.py
 %{_bindir}/pygettext3.py
 %{_bindir}/pygettext.py
@@ -1346,7 +1327,9 @@ CheckPython optimized
 %{_bindir}/python%{LDVERSION_optimized}-*-config
 %{_libdir}/libpython%{LDVERSION_optimized}.so
 %{_libdir}/pkgconfig/python-%{LDVERSION_optimized}.pc
+%{_libdir}/pkgconfig/python-%{LDVERSION_optimized}-embed.pc
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
+%{_libdir}/pkgconfig/python-%{pybasever}-embed.pc
 
 
 %if %{without flatpackage}
@@ -1395,6 +1378,8 @@ CheckPython optimized
 %{dynload_dir}/_testbuffer.%{SOABI_optimized}.so
 %{dynload_dir}/_testcapi.%{SOABI_optimized}.so
 %{dynload_dir}/_testimportmultiple.%{SOABI_optimized}.so
+%{dynload_dir}/_testinternalcapi.%{SOABI_optimized}.so
+%{dynload_dir}/_testmultiphase.%{SOABI_optimized}.so
 %{dynload_dir}/_xxtestfuzz.%{SOABI_optimized}.so
 %{pylibdir}/lib2to3/tests
 %{pylibdir}/tkinter/test
@@ -1475,6 +1460,7 @@ CheckPython optimized
 %{dynload_dir}/nis.%{SOABI_debug}.so
 %{dynload_dir}/ossaudiodev.%{SOABI_debug}.so
 %{dynload_dir}/parser.%{SOABI_debug}.so
+%{dynload_dir}/_posixshmem.%{SOABI_debug}.so
 %{dynload_dir}/pyexpat.%{SOABI_debug}.so
 %{dynload_dir}/readline.%{SOABI_debug}.so
 %{dynload_dir}/resource.%{SOABI_debug}.so
@@ -1482,9 +1468,9 @@ CheckPython optimized
 %{dynload_dir}/spwd.%{SOABI_debug}.so
 %{dynload_dir}/syslog.%{SOABI_debug}.so
 %{dynload_dir}/termios.%{SOABI_debug}.so
-%{dynload_dir}/_testmultiphase.%{SOABI_debug}.so
 %{dynload_dir}/unicodedata.%{SOABI_debug}.so
 %{dynload_dir}/_uuid.%{SOABI_debug}.so
+%{dynload_dir}/_xxsubinterpreters.%{SOABI_debug}.so
 %{dynload_dir}/_xxtestfuzz.%{SOABI_debug}.so
 %{dynload_dir}/zlib.%{SOABI_debug}.so
 
@@ -1502,6 +1488,7 @@ CheckPython optimized
 %{_libdir}/libpython%{LDVERSION_debug}.so
 %{_libdir}/libpython%{LDVERSION_debug}.so.1.0
 %{_libdir}/pkgconfig/python-%{LDVERSION_debug}.pc
+%{_libdir}/pkgconfig/python-%{LDVERSION_debug}-embed.pc
 
 # Analog of the -tools subpackage's files:
 #  None for now; we could build precanned versions that have the appropriate
@@ -1515,6 +1502,8 @@ CheckPython optimized
 %{dynload_dir}/_testbuffer.%{SOABI_debug}.so
 %{dynload_dir}/_testcapi.%{SOABI_debug}.so
 %{dynload_dir}/_testimportmultiple.%{SOABI_debug}.so
+%{dynload_dir}/_testinternalcapi.%{SOABI_debug}.so
+%{dynload_dir}/_testmultiphase.%{SOABI_debug}.so
 
 %endif # with debug_build
 
@@ -1539,6 +1528,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Tue Aug 13 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.0~b3-1
+- Update to 3.8.0b3
+
 * Sun Aug 11 2019 Miro Hrončok <mhroncok@redhat.com> - 3.7.4-5
 - Conditionalize python3-devel runtime dependencies on RPM packages and setuptools
 
@@ -2777,4 +2769,3 @@ ivazquez's specfile
 
 * Thu Sep 24 2009 Andrew McNabb <amcnabb@mcnabbs.org> 3.1.1-1
 - Initial package for Python 3.
-

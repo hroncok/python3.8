@@ -1,5 +1,15 @@
+From 327e040bd14b6bd05314b24e59ffcdb2179f9757 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
+Date: Wed, 15 Aug 2018 15:36:29 +0200
+Subject: [PATCH] 00189: Instead of bundled wheels, use our RPM packaged wheels
+
+We keep them in /usr/share/python-wheels
+---
+ Lib/ensurepip/__init__.py | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
 diff --git a/Lib/ensurepip/__init__.py b/Lib/ensurepip/__init__.py
-index 4748ba4..fc02255 100644
+index 63de20e288..4d17e413db 100644
 --- a/Lib/ensurepip/__init__.py
 +++ b/Lib/ensurepip/__init__.py
 @@ -1,16 +1,27 @@
@@ -16,9 +26,9 @@ index 4748ba4..fc02255 100644
  
 +_WHEEL_DIR = "/usr/share/python-wheels/"
  
--_SETUPTOOLS_VERSION = "40.8.0"
+-_SETUPTOOLS_VERSION = "41.0.1"
  
--_PIP_VERSION = "19.0.3"
+-_PIP_VERSION = "19.2.1"
 +def _get_most_recent_wheel_version(pkg):
 +    prefix = os.path.join(_WHEEL_DIR, "{}-".format(pkg))
 +    suffix = "-py2.py3-none-any.whl"
@@ -33,7 +43,7 @@ index 4748ba4..fc02255 100644
  
  _PROJECTS = [
      ("setuptools", _SETUPTOOLS_VERSION),
-@@ -94,12 +105,9 @@ def _bootstrap(*, root=None, upgrade=False, user=False,
+@@ -96,12 +107,9 @@ def _bootstrap(*, root=None, upgrade=False, user=False,
          additional_paths = []
          for project, version in _PROJECTS:
              wheel_name = "{}-{}-py2.py3-none-any.whl".format(project, version)
@@ -49,3 +59,6 @@ index 4748ba4..fc02255 100644
  
              additional_paths.append(os.path.join(tmpdir, wheel_name))
  
+-- 
+2.21.0
+
