@@ -25,15 +25,15 @@ addFilter(r'python3\d\.[^:]+: (E|W): devel-file-in-non-devel-package')
 addFilter(r'only-non-binary-in-usr-lib')
 
 # some devel files that are deliberately needed
-addFilter(r'devel-file-in-non-devel-package /usr/include/python3\.\dm/pyconfig-(32|64)\.h')
+addFilter(r'devel-file-in-non-devel-package /usr/include/python3\.\dm?/pyconfig-(32|64)\.h')
 addFilter(r'devel-file-in-non-devel-package /usr/lib(64)?/python3\.\d/distutils/tests/xxmodule\.c')
 
 
 # SORRY, NOT SORRY:
 # manual pages
-addFilter(r'no-manual-page-for-binary (idle|pydoc|pyvenv|2to3|python3-debug|pathfix|msgfmt|pygettext)')
-addFilter(r'no-manual-page-for-binary python3.*-config$')
-addFilter(r'no-manual-page-for-binary python3.\dd?m$')
+addFilter(r'no-manual-page-for-binary (idle|pydoc|pyvenv|2to3|python3?-debug|pathfix|msgfmt|pygettext)')
+addFilter(r'no-manual-page-for-binary python3?.*-config$')
+addFilter(r'no-manual-page-for-binary python3.\dd?m?$')
 
 # missing documentation from subpackages
 addFilter(r'^python3\d?-(debug|tkinter|test|idle)\.[^:]+: (E|W): no-documentation')
@@ -62,11 +62,15 @@ addFilter(r'^python3\d?-debuginfo\.[^:]+: (E|W): useless-provides debuginfo\(bui
 addFilter(r'library-without-ldconfig-post')
 
 # debug package contains devel and non-devel files
-addFilter(r'python3\d?-debug.[^:]+: (E|W): (non-)?devel-file-in-(non-)?devel-package')
+addFilter(r'python3\d?-debug\.[^:]+: (E|W): (non-)?devel-file-in-(non-)?devel-package')
 
 # this goes to other subpackage, hence not actually dangling, the read error is bogus
-addFilter(r'dangling-relative-symlink /usr/lib(64)?/pkgconfig/python-3\.\ddm\.pc python-3\.\d\.pc')
-addFilter(r'read-error /usr/lib(64)?/pkgconfig/python-3\.\ddm\.pc \[Errno 2\]')
+addFilter(r'dangling-relative-symlink /usr/lib(64)?/pkgconfig/python-3\.\ddm?(-embed)?\.pc python-3\.\d(-embed)?\.pc')
+addFilter(r'read-error /usr/lib(64)?/pkgconfig/python-3\.\ddm?(-embed)?\.pc \[Errno 2\]')
+
+# the python-unversioned-command package contains dangling symlinks by design
+addFilter(r'^python-unversioned-command\.[^:]+: (E|W): dangling-relative-symlink '
+          r'(/usr/bin/python \./python3|/usr/share/man/man1/python\.1\S* ./python3\.1\S*)$')
 
 # we need this macro to evaluate, even if the line starts with #
 addFilter(r'macro-in-comment %\{_pyconfig(32|64)_h\}')
