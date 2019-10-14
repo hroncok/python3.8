@@ -11,6 +11,9 @@
     - smoke:
         dir: python/smoke
         run: VERSION=3.8 ./venv.sh
+    - debugsmoke:
+        dir: python/smoke
+        run: PYTHON=python3-debug TOX=false VERSION=3.8 ./venv.sh
     - selftest:
         dir: python/selftest
         run: VERSION=3.8 X="-x test_wsgiref" ./parallel.sh
