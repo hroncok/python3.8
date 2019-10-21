@@ -20,6 +20,9 @@
     - debugtest:
         dir: python/selftest
         run: VERSION=3.8 PYTHON=python3-debug X="-x test_wsgiref" ./parallel.sh
+    - debugflags:
+        dir: python/flags
+        run: python3-debug ./assertflags.py -Og
     required_packages:
     - gcc  # for extension building in venv and selftest
     - gdb  # for test_gdb
