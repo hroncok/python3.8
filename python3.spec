@@ -17,7 +17,7 @@ URL: https://www.python.org/
 #global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 
 
@@ -406,6 +406,11 @@ Provides: bundled(python3-setuptools) = 41.2.0
 # the main package. This however makes it pulled in by default.
 # See https://bugzilla.redhat.com/show_bug.cgi?id=1547131
 Recommends: %{name}%{?_isa} = %{version}-%{release}
+
+# tkinter is part of the standard library,
+# but it is torn out to save an unwanted dependency on tk and X11.
+# we recommend it when tk is already installed (for better UX)
+Recommends: (%{name}-tkinter%{?_isa} = %{version}-%{release} if tk%{?_isa})
 
 # https://fedoraproject.org/wiki/Changes/Move_usr_bin_python_into_separate_package
 # In Fedora 31, several "unversioned" files like /usr/bin/pydoc and all the
@@ -1555,6 +1560,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Thu Nov 28 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.0-2
+- Recommend python3-tkinter when tk is installed
+
 * Mon Oct 14 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.0-1
 - Update to Python 3.8.0 final
 
