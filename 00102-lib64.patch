@@ -1,4 +1,4 @@
-From b9f1dd6be195cc3b11a80e6f0dde2096dd8b9855 Mon Sep 17 00:00:00 2001
+From 80579acb7e92e5d7e8bbf4d86743e9f01d89671b Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/
@@ -198,10 +198,10 @@ index b727f66953..a0c5fb6139 100644
          return DECODE_LOCALE_ERR("EXEC_PREFIX define", len);
      }
 diff --git a/configure b/configure
-index 2a933cdbeb..bec365124e 100755
+index 0914e24704..889d6b6a7f 100755
 --- a/configure
 +++ b/configure
-@@ -15182,9 +15182,9 @@ fi
+@@ -15170,9 +15170,9 @@ fi
  
  
  if test x$PLATFORM_TRIPLET = x; then
@@ -214,7 +214,7 @@ index 2a933cdbeb..bec365124e 100755
  
  
 diff --git a/configure.ac b/configure.ac
-index a189d42c2c..154a0aa5cc 100644
+index 7051dc109a..a13be153fa 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -4668,9 +4668,9 @@ fi
@@ -257,5 +257,5 @@ index 20d7f35652..024a1035c0 100644
                                 libraries=readline_libs))
          else:
 -- 
-2.21.0
+2.23.0
 

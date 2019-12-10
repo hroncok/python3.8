@@ -13,11 +13,11 @@ URL: https://www.python.org/
 
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
-%global general_version %{pybasever}.0
-#global prerel ...
+%global general_version %{pybasever}.1
+%global prerel rc1
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 3%{?dist}
+Release: 1%{?dist}
 License: Python
 
 
@@ -1569,6 +1569,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Tue Dec 10 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.1~rc1-1
+- Rebased to Python 3.8.1rc1
+
 * Tue Dec 03 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.0-3
 - Build Python with -fno-semantic-interposition for better performance
 - https://fedoraproject.org/wiki/Changes/PythonNoSemanticInterpositionSpeedup
