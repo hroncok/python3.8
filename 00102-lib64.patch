@@ -1,4 +1,4 @@
-From 80579acb7e92e5d7e8bbf4d86743e9f01d89671b Mon Sep 17 00:00:00 2001
+From 16ee9d86a77c8bbca3d41c9926130d37686d3bf3 Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/
@@ -257,5 +257,5 @@ index 20d7f35652..024a1035c0 100644
                                 libraries=readline_libs))
          else:
 -- 
-2.23.0
+2.24.1
 

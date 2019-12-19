@@ -14,7 +14,7 @@ URL: https://www.python.org/
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
 %global general_version %{pybasever}.1
-%global prerel rc1
+#global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
 Release: 1%{?dist}
@@ -1569,6 +1569,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Thu Dec 19 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.1-1
+- Update to Python 3.8.1
+
 * Tue Dec 10 2019 Miro Hrončok <mhroncok@redhat.com> - 3.8.1~rc1-1
 - Rebased to Python 3.8.1rc1
 
