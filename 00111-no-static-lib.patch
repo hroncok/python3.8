@@ -1,4 +1,4 @@
-From 2559cbe8f0431ba20de8a1c9921013e5e3820967 Mon Sep 17 00:00:00 2001
+From a90df7804cbe882087a246a459e861982a24530e Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Mon, 18 Jan 2010 17:59:07 +0000
 Subject: [PATCH] 00111: Don't try to build a libpythonMAJOR.MINOR.a
@@ -21,7 +21,7 @@ Co-authored-by: Miro Hrončok <miro@hroncok.cz>
  1 file changed, 2 insertions(+), 19 deletions(-)
 
 diff --git a/Makefile.pre.in b/Makefile.pre.in
-index 4ad3df1122..72d202d71b 100644
+index 406a441082..917303dd92 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
 @@ -562,7 +562,7 @@ clinic: check-clean-src $(srcdir)/Modules/_blake2/blake2s_impl.c

@@ -1,4 +1,4 @@
-From 16ee9d86a77c8bbca3d41c9926130d37686d3bf3 Mon Sep 17 00:00:00 2001
+From cf9c14a566bbcda2b2a933e6c1407d773e46d115 Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/
@@ -154,7 +154,7 @@ index 41c4229919..543c88432a 100644
                                    'site-packages')
              self.assertEqual(dirs[0], wanted)
 diff --git a/Makefile.pre.in b/Makefile.pre.in
-index 502317aa0c..4ad3df1122 100644
+index a914a9c70f..406a441082 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
 @@ -143,7 +143,7 @@ LIBDIR=		@libdir@
