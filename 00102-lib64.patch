@@ -1,4 +1,4 @@
-From cf9c14a566bbcda2b2a933e6c1407d773e46d115 Mon Sep 17 00:00:00 2001
+From b56b51af018e3b1223b708950de968585313a8b8 Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/
@@ -198,10 +198,10 @@ index b727f66953..a0c5fb6139 100644
          return DECODE_LOCALE_ERR("EXEC_PREFIX define", len);
      }
 diff --git a/configure b/configure
-index 0914e24704..889d6b6a7f 100755
+index a979363acf..b89ae1be3c 100755
 --- a/configure
 +++ b/configure
-@@ -15170,9 +15170,9 @@ fi
+@@ -15188,9 +15188,9 @@ fi
  
  
  if test x$PLATFORM_TRIPLET = x; then
@@ -214,10 +214,10 @@ index 0914e24704..889d6b6a7f 100755
  
  
 diff --git a/configure.ac b/configure.ac
-index 7051dc109a..a13be153fa 100644
+index e57ef7c38b..c59cbc223f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4668,9 +4668,9 @@ fi
+@@ -4674,9 +4674,9 @@ fi
  dnl define LIBPL after ABIFLAGS and LDVERSION is defined.
  AC_SUBST(PY_ENABLE_SHARED)
  if test x$PLATFORM_TRIPLET = x; then
