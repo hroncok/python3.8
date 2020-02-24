@@ -17,7 +17,7 @@ URL: https://www.python.org/
 %global prerel rc2
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 
 
@@ -1575,6 +1575,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Mon Feb 24 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2~rc2-2
+- Update the ensurepip module to work with setuptools >= 45
+
 * Mon Feb 24 2020 Marcel Plch <mplch@redhat.com> - 3.8.2~rc2-1
 - Rebased to 3.8.2rc2
 
