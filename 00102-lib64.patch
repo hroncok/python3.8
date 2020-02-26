@@ -1,4 +1,4 @@
-From b56b51af018e3b1223b708950de968585313a8b8 Mon Sep 17 00:00:00 2001
+From 96580364051672475607c88cdb31ec875cea6e97 Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/

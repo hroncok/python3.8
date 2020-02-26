@@ -14,10 +14,10 @@ URL: https://www.python.org/
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
 %global general_version %{pybasever}.2
-%global prerel rc2
+#global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: Python
 
 
@@ -1575,6 +1575,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Wed Feb 26 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2-1
+- Rebased to 3.8.2 final
+
 * Mon Feb 24 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2~rc2-2
 - Update the ensurepip module to work with setuptools >= 45
 

@@ -1,12 +1,12 @@
-From 3b1cea43d3da4229c210c44f4694675cba341a19 Mon Sep 17 00:00:00 2001
+From 72d6cb277804f58b660bf96d8f5efff78d88491c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
 Date: Wed, 15 Aug 2018 15:36:29 +0200
 Subject: [PATCH] 00189: Instead of bundled wheels, use our RPM packaged wheels
 
 We keep them in /usr/share/python-wheels
 ---
- Lib/ensurepip/__init__.py | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ Lib/ensurepip/__init__.py | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
 diff --git a/Lib/ensurepip/__init__.py b/Lib/ensurepip/__init__.py
 index fc0edec6e3..731817a3f0 100644
