@@ -17,7 +17,7 @@ URL: https://www.python.org/
 #global prerel ...
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 
 
@@ -64,12 +64,7 @@ License: Python
 %bcond_without optimizations
 
 # https://fedoraproject.org/wiki/Changes/PythonNoSemanticInterpositionSpeedup
-# Disabled on ppc64le and armv7hl: https://bugzilla.redhat.com/show_bug.cgi?id=1795575
-%ifarch %{power64} %{arm}
-%bcond_with no_semantic_interposition
-%else
 %bcond_without no_semantic_interposition
-%endif
 
 # Run the test suite in %%check
 %bcond_without tests
@@ -1575,6 +1570,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Fri Feb 28 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2-2
+- Enable https://fedoraproject.org/wiki/Changes/PythonNoSemanticInterpositionSpeedup on power and arm
+
 * Wed Feb 26 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2-1
 - Rebased to 3.8.2 final
 
