@@ -13,11 +13,11 @@ URL: https://www.python.org/
 
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
-%global general_version %{pybasever}.2
-#global prerel ...
+%global general_version %{pybasever}.3
+%global prerel rc1
 %global upstream_version %{general_version}%{?prerel}
 Version: %{general_version}%{?prerel:~%{prerel}}
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: Python
 
 
@@ -1561,6 +1561,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Thu Apr 30 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.3~rc1-1
+- Rebased to 3.8.3rc1
+
 * Fri Feb 28 2020 Miro Hrončok <mhroncok@redhat.com> - 3.8.2-2
 - Enable https://fedoraproject.org/wiki/Changes/PythonNoSemanticInterpositionSpeedup on power and arm
 

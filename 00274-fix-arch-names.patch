@@ -1,4 +1,4 @@
-From b60a8fee7e91e36b48a2ea27d1bb9f42642c3eb2 Mon Sep 17 00:00:00 2001
+From d487823c74f780ca1a09650d28680e348d7fb5cd Mon Sep 17 00:00:00 2001
 From: Petr Viktorin <pviktori@redhat.com>
 Date: Mon, 28 Aug 2017 17:16:46 +0200
 Subject: [PATCH] 00274: Upstream uses Debian-style architecture naming, change
@@ -29,7 +29,7 @@ index ba37cf99e2..52a9ec6662 100755
  	ppc64le | powerpc64little)
  		basic_machine=powerpc64le-unknown
 diff --git a/configure.ac b/configure.ac
-index c59cbc223f..a3e1c04e1b 100644
+index 477a5ff1cb..aea27ef86a 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -747,9 +747,9 @@ cat >> conftest.c <<EOF
@@ -82,5 +82,5 @@ index c59cbc223f..a3e1c04e1b 100644
          s390x-linux-gnu
  # elif defined(__s390__)
 -- 
-2.24.1
+2.26.2
 

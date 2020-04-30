@@ -1,4 +1,4 @@
-From 96580364051672475607c88cdb31ec875cea6e97 Mon Sep 17 00:00:00 2001
+From baa063d998b8696d88d38d2e5ce98899426e5011 Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00102: Change the various install paths to use /usr/lib64/
@@ -139,10 +139,10 @@ index b9e2fafbc0..0ae6d35b69 100644
          'scripts': '{userbase}/bin',
          'data': '{userbase}',
 diff --git a/Lib/test/test_site.py b/Lib/test/test_site.py
-index 41c4229919..543c88432a 100644
+index 1bbc697936..9a7e80dfa0 100644
 --- a/Lib/test/test_site.py
 +++ b/Lib/test/test_site.py
-@@ -266,8 +266,8 @@ class HelperFunctionsTests(unittest.TestCase):
+@@ -267,8 +267,8 @@ class HelperFunctionsTests(unittest.TestCase):
          dirs = site.getsitepackages()
          if os.sep == '/':
              # OS X, Linux, FreeBSD, etc
@@ -198,10 +198,10 @@ index b727f66953..a0c5fb6139 100644
          return DECODE_LOCALE_ERR("EXEC_PREFIX define", len);
      }
 diff --git a/configure b/configure
-index a979363acf..b89ae1be3c 100755
+index 8886561645..78867c6ffc 100755
 --- a/configure
 +++ b/configure
-@@ -15188,9 +15188,9 @@ fi
+@@ -15214,9 +15214,9 @@ fi
  
  
  if test x$PLATFORM_TRIPLET = x; then
@@ -214,10 +214,10 @@ index a979363acf..b89ae1be3c 100755
  
  
 diff --git a/configure.ac b/configure.ac
-index e57ef7c38b..c59cbc223f 100644
+index d8de9d4943..477a5ff1cb 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4674,9 +4674,9 @@ fi
+@@ -4689,9 +4689,9 @@ fi
  dnl define LIBPL after ABIFLAGS and LDVERSION is defined.
  AC_SUBST(PY_ENABLE_SHARED)
  if test x$PLATFORM_TRIPLET = x; then
@@ -230,7 +230,7 @@ index e57ef7c38b..c59cbc223f 100644
  AC_SUBST(LIBPL)
  
 diff --git a/setup.py b/setup.py
-index 20d7f35652..024a1035c0 100644
+index b168ed4082..8628b9d1cd 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -649,7 +649,7 @@ class PyBuildExt(build_ext):
@@ -257,5 +257,5 @@ index 20d7f35652..024a1035c0 100644
                                 libraries=readline_libs))
          else:
 -- 
-2.24.1
+2.26.2
 
