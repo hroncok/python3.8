@@ -1,4 +1,4 @@
-From cb63ca0eae963582c89b19d19c3edb9ae29b0b71 Mon Sep 17 00:00:00 2001
+From 08c67bfedd07ebec54f5087b59045b8c78fa2a6d Mon Sep 17 00:00:00 2001
 From: David Malcolm <dmalcolm@redhat.com>
 Date: Wed, 13 Jan 2010 21:25:18 +0000
 Subject: [PATCH] 00001: Fixup distutils/unixccompiler.py to remove standard

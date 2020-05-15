@@ -1,4 +1,4 @@
-From d487823c74f780ca1a09650d28680e348d7fb5cd Mon Sep 17 00:00:00 2001
+From 3172104314227af128f3ce68e9650663a7c1268c Mon Sep 17 00:00:00 2001
 From: Petr Viktorin <pviktori@redhat.com>
 Date: Mon, 28 Aug 2017 17:16:46 +0200
 Subject: [PATCH] 00274: Upstream uses Debian-style architecture naming, change
